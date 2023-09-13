@@ -740,7 +740,7 @@ That is, between 2019-01-01 and 2019-03-31 inclusive.
 use ineuron;
 
 drop table Product;
-
+ALTER TABLE product DISABLE CONSTRAINT sales_ibfk_1;
 create table Product
 (product_id int,
 product_name varchar(20),
@@ -759,6 +759,38 @@ quantity int,
 priice int,
 foreign key(product_id) references product(product_id)
 );
+
+Prince_katiyar
+
+SME
+Chat Started
+Hello. How may I help you?
+
+Hi, This is Prince_katiyar. Thanks for visiting us. How may I assist you?
+
+7:21 pm
+i have issue in sql
+
+7:21 pm
+ok
+
+7:21 pm
+
+7:21 pm
+can you share the code and erro clearly
+
+i m not able to get your error
+
+7:25 pm
+if i drop a table
+
+then it showing foreign key referance
+
+0\t8\t19:05:02\tdrop table Product\tError Code: 3730. Cannot drop table 'product' referenced by a foreign key constraint 'sales_ibfk_1' on table 'sales'.\t0.016 sec
+
+7:27 pm
+SET FOREIGN_KEY_CHECKS=0; DROP TABLE bericht; SET FOREIGN_KEY_CHECKS=1;
+ALTER TABLE sales DISABLE CONSTRAINT sales_ibfk_1;
 
 insert into Product values
 (1,'S8',1000),
@@ -2076,22 +2108,46 @@ In case of a tie, you should find the course with the smallest course_id.
 
 use ineuron;
 
-drop table Enrollments;
+drop table Players;
 
-create table Teams
-(team_id int,
-team_name varchar(20),
-primary key(team_id)
+create table Players
+(player_id int primary key,
+group_id int
 );
 
 create table Matches
 (match_id int,
-host_team int,
-guest_team int,
-host_goals int,
-guest_goals int,
+first_player int,
+second_player int,
+first_score int,
+second_score int,
 primary key(match_id)
 );
 
-insert into Teams values
-()
+insert into players values
+(15,'1'),
+(25,'1'),
+(30,'1'),
+(45,'1'),
+(10,'2'),
+(35,'2'),
+(50,'2'),
+(20,'2'),
+(40,'3');
+
+insert into Matches values
+(1,15,45,3,0),
+(2,30,25,1,2),
+(3,30,15,2,0),
+(4,40,20,5,2),
+(5,35,50,1,1);
+
+select * from Players;
+
+select * from Matches;
+
+select t2.group_id, t2.player_id from ( select t1.group_id, t1.player_id, 
+dense_rank() over(partition by group_id order by score desc, player_id) as r 
+from ( select p.*, case when p.player_id = m.first_player then m.first_score 
+when p.player_id = m.second_player then m.second_score end as score from Players p, 
+Matches m where player_id in (first_player, second_player) ) t1 ) t2 where r = 1;
